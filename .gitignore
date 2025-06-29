@@ -8,3 +8,6 @@ wheels/
 
 # Virtual environments
 .venv
+
+#Folders
+/out_dated/

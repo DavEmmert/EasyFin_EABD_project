@@ -78,7 +78,7 @@ latest_value = None
 stop_event = Event()
 
 producer_2 = KafkaProducer(
-    bootstrap_servers="127.0.0.1:9092",
+    bootstrap_servers="kafka:9092",
     value_serializer=lambda v: json.dumps(v).encode("utf-8"),
     key_serializer=lambda k: k.encode("utf-8")
 )
@@ -91,7 +91,7 @@ def throttled_publisher():
             try:
                 logging.info("SENDING %s: %s", stock, val)
                 future = producer_2.send(
-                    f"{stock}_live",
+                    f"{stock}",
                     key=stock,
                     value=val
                 )
@@ -104,7 +104,7 @@ def main():
     logging.info("START...")
 
     app = Application(
-        broker_address="localhost:9092",
+        broker_address="kafka:9092",
         consumer_group="alert",
         auto_offset_reset="latest",
     )
@@ -129,6 +129,7 @@ def main():
             value["price_eur"] = None
 
         value["cur_symb"] = symbol
+        value["pirce"] = price
 
         # Speichern der aktualisierten Version für spätere Sendung
         latest_values[stock] = value

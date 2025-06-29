@@ -5,6 +5,7 @@ from datetime import datetime
 from kafka import KafkaProducer
 from yfinance import WebSocket
 import ssl, certifi, os
+import websockets.exceptions
 
 # Zertifikate korrekt setzen
 os.environ['SSL_CERT_FILE'] = certifi.where()
@@ -12,7 +13,7 @@ logging.basicConfig(level=logging.INFO)
 
 # Kafka Producer mit IPv4-Adresse
 producer = KafkaProducer(
-    bootstrap_servers="127.0.0.1:9092",
+    bootstrap_servers="kafka:9092",
     value_serializer=lambda v: json.dumps(v).encode("utf-8"),
     key_serializer=lambda k: k.encode("utf-8")
 )
@@ -111,6 +112,31 @@ def print_message(msg):
     print(msg)
 
 # WebSocket-Verbindung starten
-ws = WebSocket()
-ws.subscribe(["BTC-USD","AAPL","NVDA"])
-ws.listen(handle_message)
+import redis
+import json
+
+# Liste der Topics
+topics = ["BTC-USD", "AAPL", "NVDA"]
+
+# Verbindung zu Redis herstellen
+r = redis.Redis(host="redis", port=6379, decode_responses=True)
+
+# Liste als JSON-String speichern
+r.set("topics_to_listen", json.dumps(topics))
+
+def start_listening():
+    ws = WebSocket()
+    ws.subscribe(topics)
+    ws.listen(handle_message)
+
+
+while True:
+    try:
+        print("🔌 Verbinde mit WebSocket...")
+        start_listening()
+    except websockets.exceptions.ConnectionClosedOK:
+        print("🔁 Verbindung wurde sauber getrennt (1005). Versuche erneut in 3s...")
+        time.sleep(3)
+    except Exception as e:
+        print(f"❌ WebSocket-Fehler: {e}. Neustart in 5s...")
+        time.sleep(5)

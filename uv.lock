@@ -289,6 +289,7 @@ dependencies = [
     { name = "plotly" },
     { name = "quixstreams" },
     { name = "redis" },
+    { name = "six" },
     { name = "streamlit" },
     { name = "streamlit-autorefresh" },
     { name = "yfinance" },
@@ -301,8 +302,9 @@ requires-dist = [
     { name = "kafka", specifier = ">=1.3.5" },
     { name = "kafka-python", specifier = ">=2.2.12" },
     { name = "plotly", specifier = ">=6.1.2" },
-    { name = "quixstreams", specifier = ">=3.16.1" },
+    { name = "quixstreams", specifier = "<3.16.0" },
     { name = "redis", specifier = ">=6.2.0" },
+    { name = "six", specifier = ">=1.17.0" },
     { name = "streamlit", specifier = ">=1.46.0" },
     { name = "streamlit-autorefresh", specifier = ">=1.0.1" },
     { name = "yfinance", specifier = ">=0.2.63" },
@@ -442,18 +444,6 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/35/87/bcda8e46c88d0e34cad2f09ee2d0c7f5957bccdb9791b0b934ec84d84be4/jsonlines-4.0.0.tar.gz", hash = "sha256:0c6d2c09117550c089995247f605ae4cf77dd1533041d366351f6f298822ea74", size = 11359, upload-time = "2023-09-01T12:34:44.187Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/f8/62/d9ba6323b9202dd2fe166beab8a86d29465c41a0288cbe229fac60c1ab8d/jsonlines-4.0.0-py3-none-any.whl", hash = "sha256:185b334ff2ca5a91362993f42e83588a360cf95ce4b71a73548502bda52a7c55", size = 8701, upload-time = "2023-09-01T12:34:42.563Z" },
-]
-
-[[package]]
-name = "jsonpath-ng"
-version = "1.7.0"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "ply" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/6d/86/08646239a313f895186ff0a4573452038eed8c86f54380b3ebac34d32fb2/jsonpath-ng-1.7.0.tar.gz", hash = "sha256:f6f5f7fd4e5ff79c785f1573b394043b39849fb2bb47bcead935d12b00beab3c", size = 37838, upload-time = "2024-10-11T15:41:42.404Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/35/5a/73ecb3d82f8615f32ccdadeb9356726d6cae3a4bbc840b437ceb95708063/jsonpath_ng-1.7.0-py3-none-any.whl", hash = "sha256:f3d7f9e848cba1b6da28c55b1c26ff915dc9e0b1ba7e752a53d6da8d5cbd00b6", size = 30105, upload-time = "2024-11-20T17:58:30.418Z" },
 ]
 
 [[package]]
@@ -716,15 +706,6 @@ wheels = [
 ]
 
 [[package]]
-name = "ply"
-version = "3.11"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/e5/69/882ee5c9d017149285cab114ebeab373308ef0f874fcdac9beb90e0ac4da/ply-3.11.tar.gz", hash = "sha256:00c7c1aaa88358b9c765b6d3000c6eec0ba42abca5351b095321aef446081da3", size = 159130, upload-time = "2018-02-15T19:01:31.097Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/a3/58/35da89ee790598a0700ea49b2a66594140f44dec458c07e8e3d4979137fc/ply-3.11-py2.py3-none-any.whl", hash = "sha256:096f9b8350b65ebd2fd1346b12452efe5b9607f7482813ffca50c22722a807ce", size = 49567, upload-time = "2018-02-15T19:01:27.172Z" },
-]
-
-[[package]]
 name = "protobuf"
 version = "6.31.1"
 source = { registry = "https://pypi.org/simple" }
@@ -893,12 +874,11 @@ wheels = [
 
 [[package]]
 name = "quixstreams"
-version = "3.16.1"
+version = "3.15.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "confluent-kafka", extra = ["avro", "json", "protobuf", "schemaregistry"] },
     { name = "jsonlines" },
-    { name = "jsonpath-ng" },
     { name = "jsonschema" },
     { name = "orjson" },
     { name = "pydantic" },
@@ -909,7 +889,7 @@ dependencies = [
     { name = "typing-extensions" },
 ]
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/f8/ea/0cecb0ad3974bc44544ce6291d7374b362e00e01a13560aca2d91b2ad935/quixstreams-3.16.1-py3-none-any.whl", hash = "sha256:4a3d77539cc5cbac0899a63f04492f69a2291d2167be10cae835958aff90ff87", size = 321564, upload-time = "2025-06-11T09:32:40.861Z" },
+    { url = "https://files.pythonhosted.org/packages/39/6f/5225280f338669a4fa6494cae6d4bf888a06df525022db44d7638d9780ce/quixstreams-3.15.0-py3-none-any.whl", hash = "sha256:c84ae64a0d39df42ed2d27932f9bdb7a0c80eb54c5cf879cea9c951cb8736bec", size = 304185, upload-time = "2025-05-27T15:42:21.034Z" },
 ]
 
 [[package]]

@@ -4,12 +4,21 @@ from quixstreams import Application
 from threading import Event
 from datetime import datetime
 
-from shared_buffer import label_price_buffer, topics_to_listen
-
 import redis
 import json
 
-r = redis.Redis(decode_responses=True)  # decode_responses=True → string statt bytes
+r = redis.Redis(host="redis", port=6379, decode_responses=True)
+
+# Versuche, gespeicherte Topics zu laden
+raw = r.get("topics_to_listen")
+
+if raw:
+    topics_to_listen = json.loads(raw)
+else:
+    # Fallback: Default-Liste setzen und verwenden
+    topics_to_listen = ["AAPL"]
+    r.set("topics_to_listen", json.dumps(topics_to_listen))
+
 
 def buffer_to_redis(topic, data):
     topic_name = topic.name if hasattr(topic, "name") else str(topic)
@@ -27,9 +36,14 @@ def main():
     logging.info("Consumer START...")
 
     app = Application(
-        broker_address="localhost:9092",
+        broker_address="kafka:9092",
         consumer_group="price_buffer",
         auto_offset_reset="latest",
+        consumer_extra_config={
+        "session.timeout.ms": 150000,          # Zeit bis Kafka den Consumer als "tot" erklärt (Default: 10000)
+        "max.poll.interval.ms": 300000,       # Zeit die der Consumer maximal pro Nachricht blockieren darf (Default: 300000)
+        "heartbeat.interval.ms": 15000        # Zeitabstand zwischen Heartbeats (Default: 3000)
+    }
     )
 
     dataframes = []
@@ -37,6 +51,8 @@ def main():
     for topic_name in topics_to_listen:
         topic = app.topic(topic_name, value_deserializer="json")
         sdf = app.dataframe(topic)
+        logging.info("Listening to topic: %s", topic_name)
+
 
         def make_processor(label):
             def process(msg):
