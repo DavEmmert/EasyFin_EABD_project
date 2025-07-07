@@ -110,7 +110,7 @@ if buffer and settings:
         st.session_state.min = setting["min"]
         st.session_state.max = setting["max"]
         st.session_state.open = setting["open"]
-        st.session_state.blinker = "🔴" if st.session_state.price_delta < 0 else "🟢"
+        st.session_state.blinker = "🔴" if st.session_state.value < st.session_state.last_value else "🟢"
         st.session_state.max_delta = max(st.session_state.price_delta *0.02, abs(st.session_state.max_delta))
         prices = [entry["price"] for entry in buffer]
         timestamps = [datetime.fromisoformat(entry["timestamp"]).astimezone(ZoneInfo("Europe/Berlin")) for entry in buffer]
@@ -168,7 +168,7 @@ if buffer and settings:
     with col1:
         st.metric(label=st.session_state.label,
                                 value = f"{float(st.session_state.value):,.2f} {st.session_state.cur}",
-                                delta=round(st.session_state.price_delta,2))
+                                delta=f"{st.session_state.price_delta:+.2f} %")
         
     st.plotly_chart(st.session_state.fig, use_container_width=True)
 
