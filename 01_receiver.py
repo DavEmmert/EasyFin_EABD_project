@@ -6,14 +6,16 @@ from kafka import KafkaProducer
 from yfinance import WebSocket
 import ssl, certifi, os
 import websockets.exceptions
-
+import redis
+import json
+import requests
 # Zertifikate korrekt setzen
 os.environ['SSL_CERT_FILE'] = certifi.where()
 logging.basicConfig(level=logging.INFO)
 
 # Kafka Producer mit IPv4-Adresse
 producer = KafkaProducer(
-    bootstrap_servers="kafka:9092",
+    bootstrap_servers= "kafka:9092",#"localhost:9092",#
     value_serializer=lambda v: json.dumps(v).encode("utf-8"),
     key_serializer=lambda k: k.encode("utf-8")
 )
@@ -77,7 +79,6 @@ def handle_message(msg):
             "XETRA": "EUR",
             "LSE": "GBP",
             "TSE": "JPY"
-            # … erweitere nach Bedarf
         }
 
         exchange = msg.get("exchange")
@@ -112,14 +113,33 @@ def print_message(msg):
     print(msg)
 
 # WebSocket-Verbindung starten
-import redis
-import json
 
-# Liste der Topics
-topics = ["BTC-USD", "AAPL", "NVDA"]
+topics = []
 
+for s in ["AAPL", "MSFT", "TSLA", "BABA", "SAP", "NESN", "AMZN", "TM", "RDSA", "NFLX", "ASML", "SIE", "NVO", "TCS", "SHOP"]:
+
+    symbol = s  # z. B. Apple
+    url = f"https://easyfin-api.fdfdf.demo.nilstaglieber.com/stocks/{symbol}"
+
+    try:
+        response = requests.get(url, timeout=3)
+        headers = {
+        "x-api-token": "supersecrettoken123"
+        }
+        response = requests.get(url, headers=headers, timeout=3)    
+
+        data = response.json()
+        print(f"{data}")
+
+    except requests.exceptions.RequestException as e:
+        print(f"Error  stock: {e}")
+    topics.append(data.get("symbol") ) #
+    print(topics)
+
+
+    
 # Verbindung zu Redis herstellen
-r = redis.Redis(host="redis", port=6379, decode_responses=True)
+r = redis.Redis(host="redis", port=6379, decode_responses=True)#="localhost", port=6379, decode_responses=True)#
 
 # Liste als JSON-String speichern
 r.set("topics_to_listen", json.dumps(topics))

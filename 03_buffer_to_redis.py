@@ -3,21 +3,15 @@ from collections import defaultdict, deque
 from quixstreams import Application
 from threading import Event
 from datetime import datetime
+import requests
 
 import redis
 import json
 
-r = redis.Redis(host="redis", port=6379, decode_responses=True)
+r = redis.Redis(host="redis", port=6379, decode_responses=True) #"localhost", port=6379, decode_responses=True)#
 
 # Versuche, gespeicherte Topics zu laden
-raw = r.get("topics_to_listen")
 
-if raw:
-    topics_to_listen = json.loads(raw)
-else:
-    # Fallback: Default-Liste setzen und verwenden
-    topics_to_listen = ["AAPL"]
-    r.set("topics_to_listen", json.dumps(topics_to_listen))
 
 
 def buffer_to_redis(topic, data):
@@ -32,11 +26,54 @@ def open_min_max_to_redis(topic, data):
     r.rpush(key, json.dumps(data))
     r.ltrim(key, -1, -1)
 
+def update_daily_stock_data(symbol):
+    today = datetime.now().date().isoformat()
+    marker_key = f"daily:{symbol}:fetched_on"
+
+    # Prüfen, ob bereits für heute abgerufen
+    last_fetched = r.get(marker_key)
+    if last_fetched == today:
+        return  # ✅ Heute schon aktualisiert → überspringen
+
+    url = f"https://easyfin-api.fdfdf.demo.nilstaglieber.com/stocks/{symbol}"
+    headers = {
+        "x-api-token": "supersecrettoken123"
+    }
+
+    try:
+        response = requests.get(url, headers=headers, timeout=3)
+        response.raise_for_status()
+        data = response.json()
+
+        # Tagesdaten speichern
+        data_key = f"metadata:{symbol}"
+        r.set(data_key, json.dumps(data))
+        r.expire(data_key, 86400)  # optional: 24h Gültigkeit
+
+        # Marker speichern
+        r.set(marker_key, today)
+        r.expire(marker_key, 86400)
+
+        logging.info("✅ Updated daily stock info for %s: %s", symbol, data)
+    except Exception as e:
+        logging.warning("⚠️ Couldn't update daily data for %s: %s", symbol, e)
+
+
+
 def main():
+
+    raw = r.get("topics_to_listen")
+
+    if raw:
+        topics_to_listen = json.loads(raw)
+    else:
+        # Fallback: Default-Liste setzen und verwenden
+        topics_to_listen = ["AAPL"]
+        r.set("topics_to_listen", json.dumps(topics_to_listen))
     logging.info("Consumer START...")
 
     app = Application(
-        broker_address="kafka:9092",
+        broker_address="kafka:9092", #"localhost:9092",
         consumer_group="price_buffer",
         auto_offset_reset="latest",
         consumer_extra_config={
@@ -67,6 +104,9 @@ def main():
                 if price is not None and stock:
                     datapoint = {"stock": stock, "price": price, "timestamp": ts, "cur": cur}
                     buffer_to_redis(stock, datapoint)
+                    # Tagesdaten aktualisieren
+                    update_daily_stock_data(stock)
+
                     logging.info("Buffered [%s] → %s", label, datapoint)
                     datapoint = {"open": open, "min": min, "max": max}
                     open_min_max_to_redis(f'{stock}_settings', datapoint)
