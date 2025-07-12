@@ -113,7 +113,7 @@ def main():
     logging.info("START...")
 
     app = Application(
-        broker_address="kafka:9092",
+        broker_address="srv-captain--kafka:9092",
         consumer_group="alert",
         auto_offset_reset="latest",
     )
