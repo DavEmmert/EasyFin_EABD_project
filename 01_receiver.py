@@ -115,7 +115,7 @@ def print_message(msg):
 
 # WebSocket-Verbindung starten
 
-topics = ["AAPL", "MSFT", "TSLA", "BABA", "SAP",  "AMZN", "TM", "RDSA", "NFLX", "ASML",  "NVO","SHOP"]
+topics = ["AAPL", "MSFT", "TSLA", "BABA", "SAP",  "AMZN", "TM", "RDSA", "NFLX", "ASML",  "NVO","SHOP", "BTC-USD"]
 
     # symbol = s  # z. B. Apple
     # url = f"https://easyfin-api.fdfdf.demo.nilstaglieber.com/stocks/{symbol}"
