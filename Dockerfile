@@ -19,4 +19,4 @@ RUN pip install uv
 RUN uv pip compile pyproject.toml -o requirements.txt
 RUN uv pip install --system -r requirements.txt
 
-CMD ["streamlit", "04_dashboard.py"] 
+CMD ["streamlit","run", "04_dashboard.py"] 
