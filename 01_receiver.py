@@ -116,7 +116,7 @@ def print_message(msg):
 
 topics = []
 
-for s in ["AAPL", "MSFT", "TSLA", "BABA", "SAP", "NESN", "AMZN", "TM", "RDSA", "NFLX", "ASML", "SIE", "NVO", "TCS", "SHOP"]:
+for s in ["AAPL", "MSFT", "TSLA", "BABA", "SAP",  "AMZN", "TM", "RDSA", "NFLX", "ASML",  "NVO","SHOP"]:
 
     symbol = s  # z. B. Apple
     url = f"https://easyfin-api.fdfdf.demo.nilstaglieber.com/stocks/{symbol}"
