@@ -19,4 +19,4 @@ RUN pip install uv
 RUN uv pip compile pyproject.toml -o requirements.txt
 RUN uv pip install --system -r requirements.txt
 
-CMD ["python", "receiver.py"]  # passe an, falls Datei anders heißt
+CMD ["python", "01_receiver.py"]   passe an, falls Datei anders heißt
