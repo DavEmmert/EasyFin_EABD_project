@@ -139,7 +139,10 @@ for s in ["AAPL", "MSFT", "TSLA", "BABA", "SAP",  "AMZN", "TM", "RDSA", "NFLX", 
 
     
 # Verbindung zu Redis herstellen
-r = redis.Redis(host="redis", port=6379, decode_responses=True)#="localhost", port=6379, decode_responses=True)#
+redis_host = os.getenv("REDIS_HOST", "srv-captain--redis")  # fallback für dev
+REDIS_PASSWORD="Kurt"
+time.sleep(10)
+r = redis.Redis(host=redis_host, port=6379, password=REDIS_PASSWORD)
 
 # Liste als JSON-String speichern
 r.set("topics_to_listen", json.dumps(topics))

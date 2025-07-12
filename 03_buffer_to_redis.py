@@ -7,8 +7,11 @@ import requests
 
 import redis
 import json
+import os
+redis_host = os.getenv("REDIS_HOST", "srv-captain--redis")  # fallback für dev
+REDIS_PASSWORD="Kurt"
 
-r = redis.Redis(host="redis", port=6379, decode_responses=True) #"localhost", port=6379, decode_responses=True)#
+r = redis.Redis(host=redis_host, port=6379, password=REDIS_PASSWORD)
 
 # Versuche, gespeicherte Topics zu laden
 
