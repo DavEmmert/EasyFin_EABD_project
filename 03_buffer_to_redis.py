@@ -59,11 +59,53 @@ def update_daily_stock_data(symbol):
         logging.warning("⚠️ Couldn't update daily data for %s: %s", symbol, e)
 
 
+def update_q_and_a(symbol):
+    current_hour = datetime.now().strftime("%Y-%m-%d-%H")
+    marker_key = f"hourly:{symbol}:fetched_at"
+
+    # Prüfen, ob bereits für diese Stunde abgerufen
+    last_fetched = r.get(marker_key)
+    if last_fetched == current_hour:
+        return  # ✅ Diese Stunde schon aktualisiert → überspringen
+    
+
+    url = f"https://easyfin-api.fdfdf.demo.nilstaglieber.com/answers/{symbol}"
+    headers = {
+        "x-api-token": "supersecrettoken123"
+    }
+
+    try:
+        response = requests.get(url, headers=headers, timeout=3)
+        response.raise_for_status()
+        data = response.json()
+        print(data)
+        # Tagesdaten speichern
+        data_key = f"q_and_a:{symbol}"
+
+        result = {}
+        for item in data:
+            q_id = item["question_id"]
+            result[f"q{q_id}"] = item["question_text"]
+            result[f"a{q_id}"] = item["answer_text"]
+
+        # Optional: als JSON-String speichern
+        result = json.dumps(result, indent=2)
+
+        r.set(data_key, result)
+        r.expire(data_key, 86400)  # optional: 24h Gültigkeit
+
+        # Marker speichern
+        r.set(marker_key, current_hour)
+        r.expire(marker_key, 86400)
+
+        logging.info("❓🚬 Updated q_and_a info for %s: %s", symbol, result)
+    except Exception as e:
+        logging.warning("⚠️ Couldn't update daily data for %s: %s", symbol, e)
+
+
 
 def main():
-
     raw = r.get("topics_to_listen")
-
     if raw:
         topics_to_listen = json.loads(raw)
     else:
@@ -100,12 +142,14 @@ def main():
                 min = msg.get("day_low")
                 max = msg.get("day_high")
                 cur = msg.get("cur")
+                eur_rate = msg.get("eur_rate")
 
                 if price is not None and stock:
-                    datapoint = {"stock": stock, "price": price, "timestamp": ts, "cur": cur}
+                    datapoint = {"stock": stock, "price": price, "timestamp": ts, "cur": cur, "eur_rate": eur_rate}
                     buffer_to_redis(stock, datapoint)
                     # Tagesdaten aktualisieren
                     update_daily_stock_data(stock)
+                    update_q_and_a(stock)
 
                     logging.info("Buffered [%s] → %s", label, datapoint)
                     datapoint = {"open": open, "min": min, "max": max}
