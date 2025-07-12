@@ -14,10 +14,10 @@ import os
 
 
 # Redis-Verbindung
-redis_host = os.getenv("REDIS_HOST", "localhost")  # fallback für dev
-redis_password = os.getenv("REDIS_PASSWORD", None)
+redis_host = os.getenv("REDIS_HOST", "srv-captain--redis")  # fallback für dev
+REDIS_PASSWORD="Kurt"
 
-r = redis.Redis(host=redis_host, port=6379, password=redis_password)
+r = redis.Redis(host=redis_host, port=6379, password=REDIS_PASSWORD)
 
 
 # Session-State initialisieren
