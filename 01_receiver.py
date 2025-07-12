@@ -114,27 +114,25 @@ def print_message(msg):
 
 # WebSocket-Verbindung starten
 
-topics = []
+topics = ["AAPL", "MSFT", "TSLA", "BABA", "SAP",  "AMZN", "TM", "RDSA", "NFLX", "ASML",  "NVO","SHOP"]:
 
-for s in ["AAPL", "MSFT", "TSLA", "BABA", "SAP",  "AMZN", "TM", "RDSA", "NFLX", "ASML",  "NVO","SHOP"]:
+    # symbol = s  # z. B. Apple
+    # url = f"https://easyfin-api.fdfdf.demo.nilstaglieber.com/stocks/{symbol}"
 
-    symbol = s  # z. B. Apple
-    url = f"https://easyfin-api.fdfdf.demo.nilstaglieber.com/stocks/{symbol}"
+    # try:
+    #     response = requests.get(url, timeout=3)
+    #     headers = {
+    #     "x-api-token": "supersecrettoken123"
+    #     }
+    #     response = requests.get(url, headers=headers, timeout=3)    
 
-    try:
-        response = requests.get(url, timeout=3)
-        headers = {
-        "x-api-token": "supersecrettoken123"
-        }
-        response = requests.get(url, headers=headers, timeout=3)    
+    #     data = response.json()
+    #     print(f"{data}")
 
-        data = response.json()
-        print(f"{data}")
-
-    except requests.exceptions.RequestException as e:
-        print(f"Error  stock: {e}")
-    topics.append(data.get("symbol") ) #
-    print(topics)
+    # except requests.exceptions.RequestException as e:
+    #     print(f"Error  stock: {e}")
+    # topics.append(data.get("symbol") ) #
+    # print(topics)
 
 
     
@@ -145,7 +143,7 @@ time.sleep(10)
 r = redis.Redis(host=redis_host, port=6379, password=REDIS_PASSWORD)
 
 # Liste als JSON-String speichern
-r.set("topics_to_listen", json.dumps(topics))
+r.set("topics_to_listen", topics)
 
 def start_listening():
     ws = WebSocket()
