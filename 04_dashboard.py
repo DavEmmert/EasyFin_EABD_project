@@ -15,6 +15,8 @@ import os
 
 # Redis-Verbindung
 redis_host = os.getenv("REDIS_HOST", "localhost")  # fallback für dev
+r = redis.Redis(host=redis_host, port=6379)
+
 
 # Session-State initialisieren
 if "current_view" not in st.session_state:
