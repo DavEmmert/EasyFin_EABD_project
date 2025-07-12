@@ -380,7 +380,7 @@ def show_detail_for_selected_stock():
            
 
             # Update Chart
-            fig = update_price_chart(prices, timestamps, st.session_state.open, st.session_state.price_delta)
+            fig = update_price_chart(prices, timestamps, st.session_state.open, st.session_state.price_delta_to_delta)
             st.session_state.fig = fig
 
         
