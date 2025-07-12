@@ -78,7 +78,7 @@ latest_value = None
 stop_event = Event()
 
 producer_2 = KafkaProducer(
-    bootstrap_servers="kafka:9092",
+    bootstrap_servers="srv-captain--kafka:9092",
     value_serializer=lambda v: json.dumps(v).encode("utf-8"),
     key_serializer=lambda k: k.encode("utf-8")
 )

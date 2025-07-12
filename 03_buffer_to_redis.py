@@ -118,7 +118,7 @@ def main():
     logging.info("Consumer START...")
 
     app = Application(
-        broker_address="kafka:9092", #"localhost:9092",
+        bootstrap_servers="srv-captain--kafka:9092",
         consumer_group="price_buffer",
         auto_offset_reset="latest",
         consumer_extra_config={
