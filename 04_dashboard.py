@@ -15,7 +15,9 @@ import os
 
 # Redis-Verbindung
 redis_host = os.getenv("REDIS_HOST", "localhost")  # fallback für dev
-r = redis.Redis(host=redis_host, port=6379)
+redis_password = os.getenv("REDIS_PASSWORD", None)
+
+r = redis.Redis(host=redis_host, port=6379, password=redis_password)
 
 
 # Session-State initialisieren
