@@ -21,7 +21,7 @@ def buffer_to_redis(topic, data):
     topic_name = topic.name if hasattr(topic, "name") else str(topic)
     key = f"buffer:{topic_name}"
     r.rpush(key, json.dumps(data))
-    r.ltrim(key, -86400*30, -1)
+    r.ltrim(key, -86400, -1)
 
 def open_min_max_to_redis(topic, data):
     topic_name = topic.name if hasattr(topic, "name") else str(topic)
