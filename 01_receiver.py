@@ -155,6 +155,7 @@ def start_listening():
 while True:
     try:
         print("🔌 Verbinde mit WebSocket...")
+        producer.send("live_stock_price", key="TEST", value={"test": "message", "timestamp": datetime.now().isoformat()})
         start_listening()
     except websockets.exceptions.ConnectionClosedOK:
         print("🔁 Verbindung wurde sauber getrennt (1005). Versuche erneut in 3s...")
