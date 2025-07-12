@@ -148,7 +148,7 @@ def main():
     sdf = sdf.apply(process)
 
     # Starte Sende-Thread
-    publisher_thread = Thread(target=throttled_publisher, kwargs={"mode": "latest", "interval": 1})
+    publisher_thread = Thread(target=throttled_publisher, kwargs={"mode": "all", "interval": 5})
     publisher_thread.start()
 
     try:
