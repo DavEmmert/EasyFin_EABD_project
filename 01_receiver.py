@@ -143,7 +143,7 @@ time.sleep(10)
 r = redis.Redis(host=redis_host, port=6379, password=REDIS_PASSWORD)
 
 # Liste als JSON-String speichern
-r.set("topics_to_listen", topics)
+r.set("topics_to_listen", json.dumps(topics))
 
 def start_listening():
     ws = WebSocket()
