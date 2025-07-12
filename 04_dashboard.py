@@ -10,7 +10,7 @@ import time
 from streamlit_autorefresh import st_autorefresh
 import numpy as np
 from datetime import timedelta
-
+import os 
 
 
 # Redis-Verbindung
