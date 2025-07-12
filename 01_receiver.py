@@ -104,6 +104,7 @@ def handle_message(msg):
         try:
             future = producer.send("live_stock_price", key=stock, value=measurement)
             future.get(timeout=10)
+            logging.info(f"✅ Nachricht an Kafka gesendet: {measurement}")
         except Exception as e:
             logging.error("Kafka send error: %s", e)
 
