@@ -14,7 +14,7 @@ from datetime import timedelta
 
 
 # Redis-Verbindung
-r = redis.Redis(host="redis", port=6379, decode_responses=True)
+redis_host = os.getenv("REDIS_HOST", "localhost")  # fallback für dev
 
 # Session-State initialisieren
 if "current_view" not in st.session_state:
