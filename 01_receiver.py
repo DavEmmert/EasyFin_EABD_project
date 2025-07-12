@@ -156,7 +156,7 @@ while True:
     try:
         print("🔌 Verbinde mit WebSocket...")
         handle_message({
-    "id": "TEST",
+    "id": "AAPL",
     "price": 123.45,
     "open_price": 120.00,
     "day_low": 119.50,
