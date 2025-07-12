@@ -83,7 +83,7 @@ producer_2 = KafkaProducer(
     key_serializer=lambda k: k.encode("utf-8")
 )
 
-def throttled_publisher(mode="latest", interval=5):
+def throttled_publisher(mode="all", interval=5):
     while not stop_event.is_set():
         time.sleep(interval)
 
