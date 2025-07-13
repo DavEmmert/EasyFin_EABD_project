@@ -260,7 +260,7 @@ def show_overview():
             })
 
     df = pd.DataFrame(stock_data)
-    df = df[df["Name"] != "Keine Daten"]
+    df2 = df[df["Name"] != "Keine Daten"].copy()
 
     # Layout mit 2 Spalten: links Filter, rechts Tabelle
     col1, col2 = st.columns([1, 3])  # Breitenverhältnis 1:3
@@ -273,7 +273,7 @@ def show_overview():
         selected_industry = st.selectbox("Branch", ["All"] + sorted(df["Branch"].unique()))
 
     # Filter anwenden
-    filtered_df = df.copy()
+    filtered_df = df2.copy()
     if selected_country != "All":
         filtered_df = filtered_df[filtered_df["Country"] == selected_country]
     if selected_sector != "All":
