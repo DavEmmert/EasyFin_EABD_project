@@ -21,7 +21,7 @@ def buffer_to_redis(topic, data):
     topic_name = topic.name if hasattr(topic, "name") else str(topic)
     key = f"buffer:{topic_name}"
     r.rpush(key, json.dumps(data))
-    r.ltrim(key, -86400, -1)
+    r.ltrim(key, -17280, -1)
 
 def open_min_max_to_redis(topic, data):
     topic_name = topic.name if hasattr(topic, "name") else str(topic)
@@ -51,11 +51,11 @@ def update_daily_stock_data(symbol):
         # Tagesdaten speichern
         data_key = f"metadata:{symbol}"
         r.set(data_key, json.dumps(data))
-        r.expire(data_key, 86400)  # optional: 24h Gültigkeit
+        r.expire(data_key, 17280)  # optional: 24h Gültigkeit
 
         # Marker speichern
         r.set(marker_key, today)
-        r.expire(marker_key, 86400)
+        r.expire(marker_key, 17280)
 
         logging.info("✅ Updated daily stock info for %s: %s", symbol, data)
     except Exception as e:
@@ -95,11 +95,11 @@ def update_q_and_a(symbol):
         result = json.dumps(result, indent=2)
 
         r.set(data_key, result)
-        r.expire(data_key, 86400)  # optional: 24h Gültigkeit
+        r.expire(data_key, 17280)  # optional: 24h Gültigkeit
 
         # Marker speichern
         r.set(marker_key, current_hour)
-        r.expire(marker_key, 86400)
+        r.expire(marker_key, 17280)
 
         logging.info("❓🚬 Updated q_and_a info for %s: %s", symbol, result)
     except Exception as e:
