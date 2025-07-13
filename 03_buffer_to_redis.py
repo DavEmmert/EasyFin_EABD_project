@@ -8,14 +8,10 @@ import requests
 import redis
 import json
 import os
-redis_host = os.getenv("REDIS_HOST", "srv-captain--redis")  # fallback für dev
+redis_host = os.getenv("REDIS_HOST", "srv-captain--redis")  
 REDIS_PASSWORD="Kurt"
 
 r = redis.Redis(host=redis_host, port=6379, password=REDIS_PASSWORD)
-
-# Versuche, gespeicherte Topics zu laden
-
-
 
 def buffer_to_redis(topic, data):
     topic_name = topic.name if hasattr(topic, "name") else str(topic)
@@ -160,7 +156,7 @@ def main():
                     logging.info("updated settings[%s] → %s", label, datapoint)
             return process
 
-        sdf = sdf.apply(make_processor(topic_name))  # 👈 KEIN with_context()
+        sdf = sdf.apply(make_processor(topic_name))  
         dataframes.append(sdf)
 
     try:
