@@ -55,7 +55,7 @@ for key, value in defaults.items():
         st.session_state[key] = value
 
 
-def get_buffer_from_redis(stock: str, max_items: int = 60*60*24):
+def get_buffer_from_redis(stock: str, max_items: int = 12*60*24):
     key = f"buffer:{stock}"
     raw_entries = r.lrange(key, -max_items, -1)
     return deque(json.loads(item) for item in raw_entries)
@@ -300,7 +300,7 @@ def show_overview():
             st.rerun()
 
         # Dropdown für Symbol-Auswahl
-        selected = st.selectbox("📈 Aktie auswählen:", filtered_df["Symbol"].tolist(), key="stock_selector")
+        selected = st.selectbox("📈 Choose stock:", filtered_df["Symbol"].tolist(), key="stock_selector")
         st.session_state.selected_topic = selected
         # Button zum Anzeigen
         if st.button("🔍 Show Details"):
