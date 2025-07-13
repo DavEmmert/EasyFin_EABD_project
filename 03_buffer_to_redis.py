@@ -47,11 +47,11 @@ def update_daily_stock_data(symbol):
         # Tagesdaten speichern
         data_key = f"metadata:{symbol}"
         r.set(data_key, json.dumps(data))
-        r.expire(data_key, 12*60*24*5)  # optional: 24h Gültigkeit
+        r.expire(data_key, 12*60*24*2)  # optional: 24h Gültigkeit
 
         # Marker speichern
         r.set(marker_key, today)
-        r.expire(marker_key, 12*60*24*5)
+        r.expire(marker_key, 12*60*24*2)
 
         logging.info("✅ Updated daily stock info for %s: %s", symbol, data)
     except Exception as e:
@@ -91,11 +91,11 @@ def update_q_and_a(symbol):
         result = json.dumps(result, indent=2)
 
         r.set(data_key, result)
-        r.expire(data_key, 12*60*24*5)  # optional: 24h Gültigkeit
+        r.expire(data_key, 12*60*24*2)  # optional: 24h Gültigkeit
 
         # Marker speichern
         r.set(marker_key, current_hour)
-        r.expire(marker_key,12*60*24*5)
+        r.expire(marker_key,12*60*24*2)
 
         logging.info("❓🚬 Updated q_and_a info for %s: %s", symbol, result)
     except Exception as e:
