@@ -260,7 +260,7 @@ def show_overview():
             })
 
     df = pd.DataFrame(stock_data)
-    df = df[df["Name"] != "Keine Daten"],
+    df = df[df["Name"] != "Keine Daten"]
 
     # Layout mit 2 Spalten: links Filter, rechts Tabelle
     col1, col2 = st.columns([1, 3])  # Breitenverhältnis 1:3
