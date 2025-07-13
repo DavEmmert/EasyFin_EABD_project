@@ -51,7 +51,7 @@ def update_daily_stock_data(symbol):
 
         # Marker speichern
         r.set(marker_key, today)
-        r.expire(marker_key, 12*60*24*5))
+        r.expire(marker_key, 12*60*24*5)
 
         logging.info("✅ Updated daily stock info for %s: %s", symbol, data)
     except Exception as e:
