@@ -260,7 +260,7 @@ def show_overview():
             })
 
     df = pd.DataFrame(stock_data)
-    df2 = df[df["Name"] != "Keine Daten"].copy()
+    df2 = df[df["Symbol"] != "RDSA"].copy()
 
     # Layout mit 2 Spalten: links Filter, rechts Tabelle
     col1, col2 = st.columns([1, 3])  # Breitenverhältnis 1:3
@@ -301,7 +301,7 @@ def show_overview():
             st.rerun()
 
         # Dropdown für Symbol-Auswahl
-        selected = st.selectbox("📈 Choose stock:", filtered_df["Symbol"].tolist().append("BTC-USD"), key="stock_selector")
+        selected = st.selectbox("📈 Choose stock:", filtered_df["Symbol"].tolist(), key="stock_selector")
         st.session_state.selected_topic = selected
         # Button zum Anzeigen
         if st.button("🔍 Show Details"):
