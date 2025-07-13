@@ -301,7 +301,7 @@ def show_overview():
             st.rerun()
 
         # Dropdown für Symbol-Auswahl
-        selected = st.selectbox("📈 Choose stock:", filtered_df["Symbol"].tolist(), key="stock_selector")
+        selected = st.selectbox("📈 Choose stock:", filtered_df["Symbol"].tolist().append("BTC-USD"), key="stock_selector")
         st.session_state.selected_topic = selected
         # Button zum Anzeigen
         if st.button("🔍 Show Details"):
