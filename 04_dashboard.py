@@ -362,6 +362,7 @@ def show_detail_for_selected_stock():
 
         st.session_state.value = last_entry['price'] * st.session_state.rate
         st.session_state.cur = last_entry['cur'] if st.session_state.show_cur == "cur" else "€"
+        st.session_state.last_value = st.session_state.last_value * st.session_state.rate
         if st.session_state.value != st.session_state.last_value:
             st.session_state.label = st.session_state.selected_topic 
             converted_open = setting["open"] * st.session_state.rate
