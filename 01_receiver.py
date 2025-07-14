@@ -31,7 +31,7 @@ daily_price_extrema = {}  # {(stock, date): {"low": ..., "high": ...}}
 
 def handle_message(msg):
     if "id" in msg and "price" in msg:
-        logging.info("Received message: %s", msg)
+        logging.info("Received messagSe: %s", msg)
         stock = msg["id"]
         price = round(msg["price"], 4)
         now = datetime.now()
