@@ -113,7 +113,7 @@ def handle_message(msg):
 
 
 def print_message(msg):
-    print(msg)
+    print(f"message: {msg}")
 
 # WebSocket-Verbindung starten
 
