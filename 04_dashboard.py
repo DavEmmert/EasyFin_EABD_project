@@ -250,7 +250,7 @@ def show_overview():
         else:
             stock_data.append({
                 "Symbol": stock,
-                "Name": "Keine Daten",
+                "Name": "unknown",
                 "Branch": "-",
                 "Sector": "-",
                 "Country": "-",
@@ -260,7 +260,7 @@ def show_overview():
             })
 
     df = pd.DataFrame(stock_data)
-    df2 = df[df["Symbol"] != "RDSA"].copy()
+    
 
     # Layout mit 2 Spalten: links Filter, rechts Tabelle
     col1, col2 = st.columns([1, 3])  # Breitenverhältnis 1:3
@@ -273,7 +273,7 @@ def show_overview():
         selected_industry = st.selectbox("Branch", ["All"] + sorted(df["Branch"].unique()))
 
     # Filter anwenden
-    filtered_df = df2.copy()
+    filtered_df = df.copy()
     if selected_country != "All":
         filtered_df = filtered_df[filtered_df["Country"] == selected_country]
     if selected_sector != "All":
@@ -327,11 +327,11 @@ def show_detail_for_selected_stock():
         if question_options:
             st.subheader("What do you want to know?")
             selected_q_key = st.selectbox("", options=question_options.keys(), format_func=lambda k: question_options[k])
-            selected_answer = q_and_a.get(f"a{selected_q_key[1:]}", "Keine Antwort verfügbar.")
+            selected_answer = q_and_a.get(f"a{selected_q_key[1:]}", "No data availiable")
 
             st.markdown(f"**Answer:** {selected_answer}")
         else:
-            st.info("Keine Fragen verfügbar.")
+            st.info("No data availiable")
     
     with col3: 
         blinker_placeholder = st.empty()
@@ -427,4 +427,4 @@ elif st.session_state.current_view == "detail":
     if st.session_state.selected_stock:
         show_detail_for_selected_stock()
     else:
-        st.warning("Kein Stock ausgewählt.")
+        st.warning("No stock selected")
