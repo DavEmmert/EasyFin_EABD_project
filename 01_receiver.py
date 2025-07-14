@@ -31,6 +31,7 @@ daily_price_extrema = {}  # {(stock, date): {"low": ..., "high": ...}}
 
 def handle_message(msg):
     if "id" in msg and "price" in msg:
+        logging.info("Received message: %s", msg)
         stock = msg["id"]
         price = round(msg["price"], 4)
         now = datetime.now()
@@ -156,15 +157,6 @@ def start_listening():
 while True:
     try:
         print("🔌 Verbinde mit WebSocket...")
-        handle_message({
-    "id": "AAPL",
-    "price": 123.45,
-    "open_price": 120.00,
-    "day_low": 119.50,
-    "day_high": 125.00,
-    "currency": "USD",
-    "exchange": "NMS"
-})
         start_listening()
     except websockets.exceptions.ConnectionClosedOK:
         print("🔁 Verbindung wurde sauber getrennt (1005). Versuche erneut in 3s...")
