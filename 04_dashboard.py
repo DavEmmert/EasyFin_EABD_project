@@ -260,6 +260,9 @@ def show_overview():
             })
 
     df = pd.DataFrame(stock_data)
+
+    # 🔍 Filter: nur bekannte Aktien (Name ≠ "unknown")
+    df = df[df["Name"] != "unknown"]
     
 
     # Layout mit 2 Spalten: links Filter, rechts Tabelle
