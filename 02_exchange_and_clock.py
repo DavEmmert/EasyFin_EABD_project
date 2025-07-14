@@ -123,6 +123,7 @@ def main():
 
     def process(value):
         stock = value.get("stock")
+        logging.error("Received (%s): %s", stock, value)
         if not stock:
             return
 
