@@ -101,7 +101,7 @@ def handle_message(msg):
             "day_high": day_high
         }
 
-        logging.info("Received message: %s", measurement)
+        logging.info("Processed message: %s", measurement)
 
         try:
             future = producer.send("live_stock_price", key=stock, value=measurement)
