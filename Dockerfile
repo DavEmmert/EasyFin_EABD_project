@@ -19,4 +19,4 @@ RUN pip install uv
 RUN uv pip compile pyproject.toml -o requirements.txt
 RUN uv pip install --system -r requirements.txt
 
-CMD ["python", "03_buffer_to_redis.py"] 
+CMD ["python", "01_receiver.py"] 

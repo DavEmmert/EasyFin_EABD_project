@@ -50,15 +50,16 @@ def handle_message(msg):
 
         # open_price setzen, falls noch nicht vorhanden
         key = (stock, today)
-        if "open_price" in msg:
-            open_price = round(msg["open_price"], 4)
-            daily_open_prices[key] = open_price  # ggf. überschreiben
+        if key not in daily_open_prices:
+                if "open_price" in msg:
+                    open_price = round(msg["open_price"], 4)
+                else:
+                    open_price = price
+                    logging.info(f"Set open_price for {stock} on {today}: {price}")
+                daily_open_prices[key] = open_price
         else:
-            # Wenn kein offener Preis vorhanden und noch nicht gesetzt → selbst setzen
-            if key not in daily_open_prices:
-                daily_open_prices[key] = price
-                logging.info(f"Set open_price for {stock} on {today}: {price}")
-            open_price = daily_open_prices[key]
+                open_price = daily_open_prices[key]
+
 
         # Key für tägliche Extremwerte
         extrema_key = (stock, today)
