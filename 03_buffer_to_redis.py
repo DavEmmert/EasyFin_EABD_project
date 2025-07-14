@@ -136,12 +136,16 @@ def main():
             def process(msg):
                 stock = msg.get("stock")
                 price = msg.get("price")
-                ts = msg.get("processing_timestamp") or datetime.now().isoformat()
+                ts = datetime.now().isoformat()
                 open = msg.get("open_price")
                 min = msg.get("day_low")
                 max = msg.get("day_high")
                 cur = msg.get("cur")
                 eur_rate = msg.get("eur_rate")
+
+                if price is None or eur_rate is None:
+                    logging.warning(f"Skipping [{stock}] due to missing price ({price}) or eur_rate ({eur_rate})")
+                    return  # ❌ nichts in Redis speichern
 
                 if price is not None and stock:
                     datapoint = {"stock": stock, "price": price, "timestamp": ts, "cur": cur, "eur_rate": eur_rate}
