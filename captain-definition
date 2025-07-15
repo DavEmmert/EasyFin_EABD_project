@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "dockerfilePath": "./ALFRED_Dockerfile",
+  "dockerfilePath": "./Dockerfile_04_dashboards",
   "dockerComposeFilePath": "./docker-compose.yml",
   "instanceCount": 1
 }
