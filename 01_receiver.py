@@ -6,14 +6,16 @@ from kafka import KafkaProducer
 from yfinance import WebSocket
 import ssl, certifi, os
 import websockets.exceptions
-
+import redis
+import json
+import requests
 # Zertifikate korrekt setzen
 os.environ['SSL_CERT_FILE'] = certifi.where()
 logging.basicConfig(level=logging.INFO)
 
 # Kafka Producer mit IPv4-Adresse
 producer = KafkaProducer(
-    bootstrap_servers="kafka:9092",
+   bootstrap_servers="srv-captain--kafka:9092",
     value_serializer=lambda v: json.dumps(v).encode("utf-8"),
     key_serializer=lambda k: k.encode("utf-8")
 )
@@ -29,6 +31,7 @@ daily_price_extrema = {}  # {(stock, date): {"low": ..., "high": ...}}
 
 def handle_message(msg):
     if "id" in msg and "price" in msg:
+        logging.info("Received messagSe: %s", msg)
         stock = msg["id"]
         price = round(msg["price"], 4)
         now = datetime.now()
@@ -48,15 +51,16 @@ def handle_message(msg):
 
         # open_price setzen, falls noch nicht vorhanden
         key = (stock, today)
-        if "open_price" in msg:
-            open_price = round(msg["open_price"], 4)
-            daily_open_prices[key] = open_price  # ggf. überschreiben
+        if key not in daily_open_prices:
+                if "open_price" in msg:
+                    open_price = round(msg["open_price"], 4)
+                else:
+                    open_price = price
+                    logging.info(f"Set open_price for {stock} on {today}: {price}")
+                daily_open_prices[key] = open_price
         else:
-            # Wenn kein offener Preis vorhanden und noch nicht gesetzt → selbst setzen
-            if key not in daily_open_prices:
-                daily_open_prices[key] = price
-                logging.info(f"Set open_price for {stock} on {today}: {price}")
-            open_price = daily_open_prices[key]
+                open_price = daily_open_prices[key]
+
 
         # Key für tägliche Extremwerte
         extrema_key = (stock, today)
@@ -77,7 +81,6 @@ def handle_message(msg):
             "XETRA": "EUR",
             "LSE": "GBP",
             "TSE": "JPY"
-            # … erweitere nach Bedarf
         }
 
         exchange = msg.get("exchange")
@@ -98,28 +101,49 @@ def handle_message(msg):
             "day_high": day_high
         }
 
-        logging.info("Received message: %s", measurement)
+        logging.info("Processed message: %s", measurement)
 
         try:
             future = producer.send("live_stock_price", key=stock, value=measurement)
             future.get(timeout=10)
+            logging.info(f"✅ Nachricht an Kafka gesendet: {measurement}")
         except Exception as e:
             logging.error("Kafka send error: %s", e)
 
 
 
 def print_message(msg):
-    print(msg)
+    print(f"message: {msg}")
 
 # WebSocket-Verbindung starten
-import redis
-import json
 
-# Liste der Topics
-topics = ["BTC-USD", "AAPL", "NVDA"]
+topics = ["AAPL", "MSFT", "TSLA", "BABA", "SAP",  "AMZN", "TM", "NFLX", "ASML",  "NVO","SHOP", "BTC-USD"]
 
+    # symbol = s  # z. B. Apple
+    # url = f"https://easyfin-api.fdfdf.demo.nilstaglieber.com/stocks/{symbol}"
+
+    # try:
+    #     response = requests.get(url, timeout=3)
+    #     headers = {
+    #     "x-api-token": "supersecrettoken123"
+    #     }
+    #     response = requests.get(url, headers=headers, timeout=3)    
+
+    #     data = response.json()
+    #     print(f"{data}")
+
+    # except requests.exceptions.RequestException as e:
+    #     print(f"Error  stock: {e}")
+    # topics.append(data.get("symbol") ) #
+    # print(topics)
+
+
+    
 # Verbindung zu Redis herstellen
-r = redis.Redis(host="redis", port=6379, decode_responses=True)
+redis_host = os.getenv("REDIS_HOST", "srv-captain--redis")  # fallback für dev
+REDIS_PASSWORD="Kurt"
+time.sleep(10)
+r = redis.Redis(host=redis_host, port=6379, password=REDIS_PASSWORD)
 
 # Liste als JSON-String speichern
 r.set("topics_to_listen", json.dumps(topics))

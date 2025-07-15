@@ -1,0 +1,6 @@
+{
+  "schemaVersion": 2,
+  "dockerfilePath": "./ALFRED_Dockerfile",
+  "dockerComposeFilePath": "./docker-compose.yml",
+  "instanceCount": 1
+}

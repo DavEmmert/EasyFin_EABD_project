@@ -78,12 +78,12 @@ latest_value = None
 stop_event = Event()
 
 producer_2 = KafkaProducer(
-    bootstrap_servers="kafka:9092",
+    bootstrap_servers="srv-captain--kafka:9092",
     value_serializer=lambda v: json.dumps(v).encode("utf-8"),
     key_serializer=lambda k: k.encode("utf-8")
 )
 
-def throttled_publisher(mode="latest", interval=1):
+def throttled_publisher(mode="all", interval=5):
     while not stop_event.is_set():
         time.sleep(interval)
 
@@ -103,7 +103,7 @@ def throttled_publisher(mode="latest", interval=1):
                 )
                 future.get(timeout=10)
                 if mode == "latest":
-                    latest_values[stock]["updated"] = False  # Flag nur im "latest"-Modus zurücksetzen
+                    latest_values[stock]["updated"] = False 
             except Exception as e:
                 logging.error("Kafka send error (%s): %s", stock, e)
 
@@ -113,7 +113,7 @@ def main():
     logging.info("START...")
 
     app = Application(
-        broker_address="kafka:9092",
+        broker_address="srv-captain--kafka:9092",
         consumer_group="alert",
         auto_offset_reset="latest",
     )
@@ -123,6 +123,7 @@ def main():
 
     def process(value):
         stock = value.get("stock")
+        logging.error("Received (%s): %s", stock, value)
         if not stock:
             return
 
@@ -138,7 +139,7 @@ def main():
             value["price_eur"] = None
 
         value["cur_symb"] = symbol
-        value["pirce"] = price
+        value["price"] = price
 
         # Speichern der aktualisierten Version für spätere Sendung
         latest_values[stock] = {"value": value, "updated": True}
@@ -148,7 +149,7 @@ def main():
     sdf = sdf.apply(process)
 
     # Starte Sende-Thread
-    publisher_thread = Thread(target=throttled_publisher, kwargs={"mode": "latest", "interval": 1})
+    publisher_thread = Thread(target=throttled_publisher, kwargs={"mode": "all", "interval": 5})
     publisher_thread.start()
 
     try:
